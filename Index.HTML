@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>استعلام رحلة العين السخنة</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #333;
+    }
+    header {
+      background-color: #004080;
+      color: #fff;
+      padding: 25px 15px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    input[type="text"] {
+      width: 300px;
+      max-width: 90vw;
+      padding: 12px 15px;
+      font-size: 1.2rem;
+      border: 2px solid #004080;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus {
+      border-color: #0080ff;
+      box-shadow: 0 0 8px rgba(0, 128, 255, 0.4);
+    }
+    button {
+      margin-top: 15px;
+      background-color: #0080ff;
+      border: none;
+      color: white;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 150px;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 1.3rem;
+      min-height: 70px;
+      color: #004080;
+      white-space: pre-line;
+    }
+    #result .error {
+      color: #d93025;
+      font-weight: 600;
+    }
+    footer {
+      background: #e0e7f1;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 40px;
+      font-weight: 600;
+      color: #555;
+      font-size: 1rem;
+    }
+    @media (max-width: 500px) {
+      input[type="text"] {
+        width: 100%;
+      }
+      button {
+        width: 100%;
+      }
+      footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  رحلة العين السخنة لمركز شباب نور المقطم
+</header>
+
+<main>
+  <input type="text" id="membership" placeholder="ادخل رقم العضوية" autocomplete="off" />
+  <button onclick="lookup()">استعلام</button>
+  <div id="result"></div>
+</main>
+
+<footer>
+  <div style="text-align: left;">
+    رئيس مجلس الإدارة<br>
+    نادر الرفاعي
+  </div>
+  <div style="text-align: right;">
+    تحيات مدير المركز<br>
+    هشام أبو العلا
+  </div>
+</footer>
+
+<script>
+  function lookup() {
+    const id = document.getElementById('membership').value.trim();
+    const resultDiv = document.getElementById('result');
+    if (!id) {
+      resultDiv.innerHTML = '<span class="error">من فضلك أدخل رقم العضوية</span>';
+      return;
+    }
+    resultDiv.textContent = 'جاري البحث...';
+    fetch("https://script.google.com/macros/s/AKfycbx2uR52ys_ax9mtOwcGgDdoojGmluP6G1XjZNg9igt4Sf_wfkyDcvGKYLayM8fyKmUyuA/exec?id=" + encodeURIComponent(id))
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          resultDiv.innerHTML = `<span class="error">❌ ${data.error}</span>`;
+        } else {
+          resultDiv.textContent = `✅ الاسم: ${data.name}\n🚌 رقم الأتوبيس: ${data.bus}\n🪑 رقم الكرسي: ${data.seat}`;
+        }
+      })
+      .catch(() => {
+        resultDiv.innerHTML = '<span class="error">حدث خطأ في الاتصال. حاول مرة أخرى.</span>';
+      });
+  }
+</script>
+
+</body>
+</html>

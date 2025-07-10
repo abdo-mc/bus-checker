@@ -147,20 +147,21 @@
 
   function showResult(data) {
     const resultDiv = document.getElementById('result');
-    if (Array.isArray(data.results)) {
+
+    if (data.results && Array.isArray(data.results)) {
       if (data.results.length === 0) {
         showError("لم يتم العثور على نتائج.");
         return;
       }
-
       let output = "🔽 النتائج المطابقة:\n";
-      data.results.forEach((item, i) => {
+      data.results.forEach((item) => {
         output += `\n👤 ${item.name}\n🚌 أتوبيس: ${item.bus}\n🪑 كرسي: ${item.seat}\n-------------------`;
       });
       resultDiv.textContent = output;
-
-    } else {
+    } else if (data.name) {
       resultDiv.textContent = `✅ الاسم: ${data.name}\n🚌 أتوبيس: ${data.bus}\n🪑 كرسي: ${data.seat}`;
+    } else {
+      showError("لم يتم العثور على نتائج.");
     }
   }
 

@@ -16,23 +16,25 @@
       color: #333;
     }
     nav {
-      width: 160px;
+      width: 180px;
       background-color: #004080;
       padding: 20px;
       color: white;
       display: flex;
       flex-direction: column;
       gap: 15px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     }
     nav button {
       background: #0066cc;
       border: none;
       color: white;
-      padding: 12px;
-      font-size: 1.1rem;
+      padding: 14px;
+      font-size: 1.2rem;
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      box-shadow: 0 3px 6px rgba(0,102,204,0.4);
     }
     nav button:hover {
       background: #003d66;
@@ -40,20 +42,22 @@
     main {
       flex-grow: 1;
       padding: 40px 30px;
+      overflow-x: auto;
     }
     header {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: 700;
       margin-bottom: 25px;
       color: #004080;
       text-align: center;
+      user-select: none;
     }
     .search-box {
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       text-align: center;
     }
     .search-box h3 {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       color: #004080;
     }
     input[type="text"] {
@@ -66,33 +70,62 @@
       outline: none;
       margin-bottom: 10px;
       text-align: center;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus {
+      border-color: #0080ff;
     }
     button.search-btn {
       background-color: #0080ff;
       border: none;
       color: white;
-      padding: 10px 20px;
-      font-size: 1rem;
+      padding: 12px 25px;
+      font-size: 1.1rem;
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
       margin-top: 5px;
+      box-shadow: 0 3px 8px rgba(0,128,255,0.6);
     }
     button.search-btn:hover {
       background-color: #005bb5;
     }
     #result {
-      font-size: 1.1rem;
-      color: #004080;
-      white-space: pre-line;
       margin-top: 20px;
-      min-height: 150px;
       border: 2px solid #004080;
-      border-radius: 10px;
-      padding: 15px;
+      border-radius: 12px;
+      padding: 20px;
       background: #dbe9ff;
+      color: #004080;
+      max-height: 450px;
       overflow-y: auto;
-      max-height: 400px;
+      user-select: text;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 1.1rem;
+      user-select: text;
+    }
+    thead {
+      background-color: #004080;
+      color: white;
+      font-weight: 700;
+    }
+    th, td {
+      padding: 12px 10px;
+      border: 1px solid #004080;
+    }
+    tbody tr:hover {
+      background-color: #b3d1ff;
+    }
+    .error {
+      color: #d93025;
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-align: center;
+      user-select: none;
     }
     footer {
       background: #e0e7f1;
@@ -106,6 +139,7 @@
       bottom: 0;
       width: 100%;
       box-sizing: border-box;
+      user-select: none;
     }
     @media (max-width: 600px) {
       body {
@@ -117,6 +151,7 @@
         justify-content: center;
         gap: 10px;
         padding: 15px;
+        box-shadow: none;
       }
       main {
         padding: 20px 10px 80px 10px;
@@ -128,12 +163,13 @@
         position: static;
       }
       #result {
-        max-height: 200px;
+        max-height: 250px;
       }
-    }
-    .error {
-      color: #d93025;
-      font-weight: 600;
+      nav button {
+        flex: 1;
+        font-size: 1rem;
+        padding: 10px;
+      }
     }
   </style>
 </head>
@@ -171,28 +207,45 @@
 </footer>
 
 <script>
-  // رابط الـ API - تأكد تضع الرابط الصحيح هنا
   const apiBase = "https://script.google.com/macros/s/AKfycbzKu4SfqhKb12eop2xbvhvmpFnivSU9aNR7g7JGaKp43FDGVi8vi6oH8n6V-W8IPbT6Hg/exec";
 
   function showError(message) {
-    document.getElementById('result').innerHTML = `<span class="error">❌ ${message}</span>`;
+    document.getElementById('result').innerHTML = `<div class="error">❌ ${message}</div>`;
   }
 
-  // عرض بيانات الأتوبيس مع الكراسي والأعضاء
+  // عرض بيانات الأتوبيس في جدول مرتب حسب رقم الكرسي
   function showBusResults(busNumber, data) {
     const resultDiv = document.getElementById('result');
     if (data.results && data.results.length > 0) {
-      let output = `🚍 بيانات الأتوبيس ${busNumber}:\n\n`;
-      data.results.forEach(item => {
-        output += `كرسي رقم ${item.seat} - ${item.name} (عضوية: ${item.id})\n`;
+      // ترتيب حسب رقم الكرسي (seat)
+      const sorted = data.results.slice().sort((a,b) => Number(a.seat) - Number(b.seat));
+
+      let table = `<table>
+        <thead>
+          <tr>
+            <th>رقم الكرسي</th>
+            <th>اسم العضو</th>
+            <th>رقم العضوية</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+      sorted.forEach(item => {
+        table += `<tr>
+          <td>${item.seat}</td>
+          <td>${item.name}</td>
+          <td>${item.id}</td>
+        </tr>`;
       });
-      resultDiv.textContent = output;
+
+      table += `</tbody></table>`;
+      resultDiv.innerHTML = `<h3>🚍 بيانات الأتوبيس ${busNumber}</h3>` + table;
     } else {
       showError("لا توجد بيانات لهذا الأتوبيس");
     }
   }
 
-  // تحميل بيانات الأتوبيس فقط (لا يبحث عن رقم عضوية)
+  // تحميل بيانات الأتوبيس فقط (لا يبحث برقم العضوية)
   function loadBusSeats(busNumber) {
     document.getElementById('result').textContent = "جاري تحميل البيانات...";
     fetch(`${apiBase}?bus=${encodeURIComponent(busNumber)}`)
@@ -214,8 +267,16 @@
     if (data.error) {
       showError(data.error);
     } else {
-      const output = `✅ الاسم: ${data.name}\n🚌 أتوبيس: ${data.bus}\n🪑 كرسي: ${data.seat}`;
-      document.getElementById('result').textContent = output;
+      const output = `
+        <h3>نتيجة البحث برقم العضوية</h3>
+        <table>
+          <tr><th>الاسم</th><td>${data.name}</td></tr>
+          <tr><th>رقم الأتوبيس</th><td>${data.bus}</td></tr>
+          <tr><th>رقم الكرسي</th><td>${data.seat}</td></tr>
+          <tr><th>رقم العضوية</th><td>${data.id}</td></tr>
+        </table>
+      `;
+      document.getElementById('result').innerHTML = output;
     }
   }
 

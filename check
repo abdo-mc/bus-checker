@@ -172,7 +172,7 @@
 
 <script>
   // رابط الـ API - تأكد تضع الرابط الصحيح هنا
-  const apiBase = "https://script.google.com/macros/s/AKfycbywMLxJT_xBYoFCdSglMuCIVATe-qcu3m5x3t64fIza/dev";
+  const apiBase = "https://script.google.com/macros/s/AKfycbzKu4SfqhKb12eop2xbvhvmpFnivSU9aNR7g7JGaKp43FDGVi8vi6oH8n6V-W8IPbT6Hg/exec";
 
   function showError(message) {
     document.getElementById('result').innerHTML = `<span class="error">❌ ${message}</span>`;

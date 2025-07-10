@@ -136,7 +136,7 @@
 <body>
 
 <nav>
-  <button onclick="loadBusSeats('1')">أتوبيس 1</button>
+  <button onclick="('1')">أتوبيس 1</button>
   <button onclick="loadBusSeats('2')">أتوبيس 2</button>
   <button onclick="loadBusSeats('3')">أتوبيس 3</button>
   <button onclick="loadBusSeats('4')">أتوبيس 4</button>
@@ -174,33 +174,35 @@
   }
 
   function showBusResults(busNumber, data) {
-    const resultDiv = document.getElementById('result');
-    if (data.results && data.results.length > 0) {
-      let output = `🚍 بيانات الأتوبيس ${busNumber}:\n\n`;
-      data.results.forEach(item => {
-        output += `كرسي رقم ${item.seat} - ${item.name} (عضوية: ${item.id})\n`;
-      });
-      resultDiv.textContent = output;
-    } else {
-      showError("لا توجد بيانات لهذا الأتوبيس");
-    }
+  const resultDiv = document.getElementById('result');
+  if (data.results && data.results.length > 0) {
+    let output = `🚍 بيانات الأتوبيس ${busNumber}:\n\n`;
+    data.results.forEach(item => {
+      output += `كرسي رقم ${item.seat} - ${item.name} (عضوية: ${item.id})\n`;
+    });
+    resultDiv.textContent = output;
+  } else {
+    showError("لا توجد بيانات لهذا الأتوبيس");
   }
+}
 
-  function loadBusSeats(busNumber) {
-    document.getElementById('result').textContent = "جاري تحميل البيانات...";
-    fetch(`${apiBase}?bus=${encodeURIComponent(busNumber)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          showError(data.error);
-        } else {
-          showBusResults(busNumber, data);
-        }
-      })
-      .catch(() => {
-        showError("حدث خطأ في الاتصال.");
-      });
-  }
+
+function loadBusSeats(busNumber) {
+  document.getElementById('result').textContent = "جاري تحميل البيانات...";
+  fetch(`${apiBase}?bus=${encodeURIComponent(busNumber)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        showError(data.error);
+      } else {
+        showBusResults(busNumber, data);
+      }
+    })
+    .catch(() => {
+      showError("❌ حدث خطأ في الاتصال.");
+    });
+}
+
 
   function showIdResult(data) {
     if (data.error) {

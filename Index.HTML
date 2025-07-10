@@ -29,39 +29,77 @@
     main {
       flex-grow: 1;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
       padding: 40px 20px;
+      gap: 40px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .bus-list {
+      background: #fff;
+      border: 2px solid #004080;
+      border-radius: 10px;
+      padding: 20px 30px;
+      width: 150px;
+      color: #004080;
+      font-weight: 700;
+      font-size: 1.2rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .bus-list h3 {
+      margin-bottom: 15px;
+      border-bottom: 2px solid #004080;
+      padding-bottom: 8px;
+    }
+    .bus-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .bus-list ul li {
+      padding: 8px 0;
+      border-bottom: 1px solid #004080;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .bus-list ul li:hover {
+      background-color: #cce0ff;
     }
     .search-box {
-      margin-bottom: 25px;
+      background: #fff;
+      border: 2px solid #004080;
+      border-radius: 10px;
+      padding: 25px 30px;
+      max-width: 400px;
+      width: 90vw;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
     }
     .search-box h3 {
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       color: #004080;
     }
     input[type="text"] {
-      width: 300px;
-      max-width: 90vw;
+      width: 100%;
       padding: 12px 15px;
       font-size: 1.1rem;
       border: 2px solid #004080;
       border-radius: 8px;
       outline: none;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
     button {
       background-color: #0080ff;
       border: none;
       color: white;
-      padding: 10px 20px;
+      padding: 12px 20px;
       font-size: 1rem;
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      margin-top: 5px;
+      width: 100%;
     }
     button:hover {
       background-color: #005bb5;
@@ -78,6 +116,21 @@
       color: #d93025;
       font-weight: 600;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 1rem;
+    }
+    th, td {
+      border: 1px solid #004080;
+      padding: 8px 12px;
+      text-align: center;
+      color: #004080;
+    }
+    th {
+      background-color: #cce0ff;
+    }
     footer {
       background: #e0e7f1;
       display: flex;
@@ -87,18 +140,18 @@
       color: #555;
       font-size: 1rem;
     }
-    @media (max-width: 500px) {
-      input[type="text"] {
-        width: 100%;
-      }
-      button {
-        width: 100%;
-      }
-      footer {
+    @media (max-width: 700px) {
+      main {
         flex-direction: column;
         align-items: center;
-        gap: 10px;
-        font-size: 0.9rem;
+        gap: 30px;
+      }
+      .bus-list {
+        width: 90vw;
+      }
+      .search-box {
+        max-width: none;
+        width: 90vw;
       }
     }
   </style>
@@ -110,21 +163,22 @@
 </header>
 
 <main>
+  <div class="bus-list">
+    <h3>الأتوبيسات</h3>
+    <ul>
+      <li onclick="loadBusSeats('1')">أتوبيس 1</li>
+      <li onclick="loadBusSeats('2')">أتوبيس 2</li>
+      <li onclick="loadBusSeats('3')">أتوبيس 3</li>
+      <li onclick="loadBusSeats('4')">أتوبيس 4</li>
+    </ul>
+  </div>
+
   <div class="search-box">
     <h3>🔍 البحث برقم العضوية</h3>
     <input type="text" id="membership" placeholder="ادخل رقم العضوية" />
-    <br>
     <button onclick="searchById()">بحث برقم العضوية</button>
+    <div id="result"></div>
   </div>
-
-  <div class="search-box">
-    <h3>🔍 البحث بالاسم</h3>
-    <input type="text" id="memberName" placeholder="ادخل الاسم كاملاً أو جزئيًا" />
-    <br>
-    <button onclick="searchByName()">بحث بالاسم</button>
-  </div>
-
-  <div id="result"></div>
 </main>
 
 <footer>
@@ -147,21 +201,20 @@
 
   function showResult(data) {
     const resultDiv = document.getElementById('result');
-
-    if (data.results && Array.isArray(data.results)) {
+    if (Array.isArray(data.results)) {
       if (data.results.length === 0) {
         showError("لم يتم العثور على نتائج.");
         return;
       }
+
       let output = "🔽 النتائج المطابقة:\n";
-      data.results.forEach((item) => {
+      data.results.forEach((item, i) => {
         output += `\n👤 ${item.name}\n🚌 أتوبيس: ${item.bus}\n🪑 كرسي: ${item.seat}\n-------------------`;
       });
       resultDiv.textContent = output;
-    } else if (data.name) {
-      resultDiv.textContent = `✅ الاسم: ${data.name}\n🚌 أتوبيس: ${data.bus}\n🪑 كرسي: ${data.seat}`;
+
     } else {
-      showError("لم يتم العثور على نتائج.");
+      resultDiv.textContent = `✅ الاسم: ${data.name}\n🚌 أتوبيس: ${data.bus}\n🪑 كرسي: ${data.seat}`;
     }
   }
 
@@ -175,13 +228,37 @@
       .catch(() => showError("حدث خطأ في الاتصال."));
   }
 
-  function searchByName() {
-    const name = document.getElementById('memberName').value.trim();
-    if (!name) return showError("من فضلك أدخل الاسم");
-    document.getElementById('result').textContent = "جاري البحث...";
-    fetch(`${apiBase}?name=${encodeURIComponent(name)}`)
+  function loadBusSeats(busNumber) {
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = "جاري تحميل بيانات الأتوبيس...";
+    fetch(`${apiBase}?bus=${encodeURIComponent(busNumber)}`)
       .then(res => res.json())
-      .then(data => data.error ? showError(data.error) : showResult(data))
+      .then(data => {
+        if(data.error) {
+          showError(data.error);
+          return;
+        }
+        // اعرض جدول الكراسي
+        let html = `<h3>بيانات أتوبيس ${busNumber}</h3>`;
+        html += `<table>
+          <thead>
+            <tr>
+              <th>رقم العضوية</th>
+              <th>الاسم</th>
+              <th>الكرسي</th>
+            </tr>
+          </thead>
+          <tbody>`;
+        data.results.forEach(item => {
+          html += `<tr>
+            <td>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.seat}</td>
+          </tr>`;
+        });
+        html += "</tbody></table>";
+        resultDiv.innerHTML = html;
+      })
       .catch(() => showError("حدث خطأ في الاتصال."));
   }
 </script>

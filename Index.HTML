@@ -23,7 +23,6 @@
       display: flex;
       flex-direction: column;
       gap: 15px;
-      box-sizing: border-box;
     }
     nav button {
       background: #0066cc;
@@ -41,7 +40,6 @@
     main {
       flex-grow: 1;
       padding: 40px 30px;
-      box-sizing: border-box;
     }
     header {
       font-size: 1.8rem;
@@ -88,12 +86,11 @@
       color: #004080;
       white-space: pre-line;
       margin-top: 20px;
-      min-height: 120px;
+      min-height: 150px;
       border: 2px solid #004080;
       border-radius: 10px;
       padding: 15px;
       background: #dbe9ff;
-      box-sizing: border-box;
       overflow-y: auto;
       max-height: 400px;
     }
@@ -130,13 +127,20 @@
         gap: 10px;
         position: static;
       }
+      #result {
+        max-height: 200px;
+      }
+    }
+    .error {
+      color: #d93025;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
 
 <nav>
-  <button onclick="('1')">أتوبيس 1</button>
+  <button onclick="loadBusSeats('1')">أتوبيس 1</button>
   <button onclick="loadBusSeats('2')">أتوبيس 2</button>
   <button onclick="loadBusSeats('3')">أتوبيس 3</button>
   <button onclick="loadBusSeats('4')">أتوبيس 4</button>
@@ -167,43 +171,45 @@
 </footer>
 
 <script>
-  const apiBase = "https://script.google.com/macros/s/AKfycbx2uR52ys_ax9mtOwcGgDdoojGmluP6G1XjZNg9igt4Sf_wfkyDcvGKYLayM8fyKmUyuA/exec";
+  // رابط الـ API - تأكد تضع الرابط الصحيح هنا
+  const apiBase = "https://script.google.com/macros/s/AKfycbywMLxJT_xBYoFCdSglMuCIVATe-qcu3m5x3t64fIza/exec";
 
   function showError(message) {
-    document.getElementById('result').innerHTML = `<span style="color:#d93025;font-weight:600;">❌ ${message}</span>`;
+    document.getElementById('result').innerHTML = `<span class="error">❌ ${message}</span>`;
   }
 
+  // عرض بيانات الأتوبيس مع الكراسي والأعضاء
   function showBusResults(busNumber, data) {
-  const resultDiv = document.getElementById('result');
-  if (data.results && data.results.length > 0) {
-    let output = `🚍 بيانات الأتوبيس ${busNumber}:\n\n`;
-    data.results.forEach(item => {
-      output += `كرسي رقم ${item.seat} - ${item.name} (عضوية: ${item.id})\n`;
-    });
-    resultDiv.textContent = output;
-  } else {
-    showError("لا توجد بيانات لهذا الأتوبيس");
+    const resultDiv = document.getElementById('result');
+    if (data.results && data.results.length > 0) {
+      let output = `🚍 بيانات الأتوبيس ${busNumber}:\n\n`;
+      data.results.forEach(item => {
+        output += `كرسي رقم ${item.seat} - ${item.name} (عضوية: ${item.id})\n`;
+      });
+      resultDiv.textContent = output;
+    } else {
+      showError("لا توجد بيانات لهذا الأتوبيس");
+    }
   }
-}
 
+  // تحميل بيانات الأتوبيس فقط (لا يبحث عن رقم عضوية)
+  function loadBusSeats(busNumber) {
+    document.getElementById('result').textContent = "جاري تحميل البيانات...";
+    fetch(`${apiBase}?bus=${encodeURIComponent(busNumber)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          showError(data.error);
+        } else {
+          showBusResults(busNumber, data);
+        }
+      })
+      .catch(() => {
+        showError("حدث خطأ في الاتصال.");
+      });
+  }
 
-function loadBusSeats(busNumber) {
-  document.getElementById('result').textContent = "جاري تحميل البيانات...";
-  fetch(`${apiBase}?bus=${encodeURIComponent(busNumber)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        showError(data.error);
-      } else {
-        showBusResults(busNumber, data);
-      }
-    })
-    .catch(() => {
-      showError("❌ حدث خطأ في الاتصال.");
-    });
-}
-
-
+  // عرض نتيجة البحث برقم العضوية
   function showIdResult(data) {
     if (data.error) {
       showError(data.error);
@@ -213,6 +219,7 @@ function loadBusSeats(busNumber) {
     }
   }
 
+  // البحث برقم العضوية فقط (لا يبحث عن أتوبيس)
   function searchById() {
     const id = document.getElementById('membership').value.trim();
     if (!id) {

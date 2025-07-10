@@ -12,124 +12,85 @@
       padding: 0;
       direction: rtl;
       display: flex;
-      flex-direction: column;
       min-height: 100vh;
       color: #333;
     }
-    header {
+    nav {
+      width: 160px;
       background-color: #004080;
-      color: #fff;
-      padding: 25px 15px;
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    main {
-      flex-grow: 1;
+      padding: 20px;
+      color: white;
       display: flex;
-      padding: 40px 20px;
-      gap: 40px;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 15px;
     }
-    .bus-list {
-      background: #fff;
-      border: 2px solid #004080;
-      border-radius: 10px;
-      padding: 20px 30px;
-      width: 150px;
-      color: #004080;
-      font-weight: 700;
-      font-size: 1.2rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-    .bus-list h3 {
-      margin-bottom: 15px;
-      border-bottom: 2px solid #004080;
-      padding-bottom: 8px;
-    }
-    .bus-list ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .bus-list ul li {
-      padding: 8px 0;
-      border-bottom: 1px solid #004080;
+    nav button {
+      background: #0066cc;
+      border: none;
+      color: white;
+      padding: 12px;
+      font-size: 1.1rem;
+      border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-    .bus-list ul li:hover {
-      background-color: #cce0ff;
+    nav button:hover {
+      background: #003d66;
+    }
+    main {
+      flex-grow: 1;
+      padding: 40px 30px;
+    }
+    header {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #004080;
+      text-align: center;
     }
     .search-box {
-      background: #fff;
-      border: 2px solid #004080;
-      border-radius: 10px;
-      padding: 25px 30px;
-      max-width: 400px;
-      width: 90vw;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
       text-align: center;
     }
     .search-box h3 {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       color: #004080;
     }
     input[type="text"] {
-      width: 100%;
+      width: 300px;
+      max-width: 90vw;
       padding: 12px 15px;
       font-size: 1.1rem;
       border: 2px solid #004080;
       border-radius: 8px;
       outline: none;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
+      text-align: center;
     }
-    button {
+    button.search-btn {
       background-color: #0080ff;
       border: none;
       color: white;
-      padding: 12px 20px;
+      padding: 10px 20px;
       font-size: 1rem;
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      width: 100%;
+      margin-top: 5px;
     }
-    button:hover {
+    button.search-btn:hover {
       background-color: #005bb5;
     }
     #result {
-      margin-top: 30px;
-      font-size: 1.2rem;
-      min-height: 70px;
+      font-size: 1.1rem;
       color: #004080;
       white-space: pre-line;
-      text-align: center;
-    }
-    #result .error {
-      color: #d93025;
-      font-weight: 600;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
       margin-top: 20px;
-      font-size: 1rem;
-    }
-    th, td {
-      border: 1px solid #004080;
-      padding: 8px 12px;
-      text-align: center;
-      color: #004080;
-    }
-    th {
-      background-color: #cce0ff;
+      min-height: 120px;
+      border: 2px solid #004080;
+      border-radius: 10px;
+      padding: 15px;
+      background: #dbe9ff;
     }
     footer {
       background: #e0e7f1;
@@ -139,127 +100,127 @@
       font-weight: 600;
       color: #555;
       font-size: 1rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-sizing: border-box;
     }
-    @media (max-width: 700px) {
+    @media (max-width: 600px) {
+      body {
+        flex-direction: column;
+      }
+      nav {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px;
+      }
       main {
+        padding: 20px 10px 80px 10px;
+      }
+      footer {
         flex-direction: column;
         align-items: center;
-        gap: 30px;
-      }
-      .bus-list {
-        width: 90vw;
-      }
-      .search-box {
-        max-width: none;
-        width: 90vw;
+        gap: 10px;
+        position: static;
       }
     }
   </style>
 </head>
 <body>
 
-<header>
-  رحلة العين السخنة لمركز شباب نور المقطم
-</header>
+<nav>
+  <button onclick="loadBusSeats('1')">أتوبيس 1</button>
+  <button onclick="loadBusSeats('2')">أتوبيس 2</button>
+  <button onclick="loadBusSeats('3')">أتوبيس 3</button>
+  <button onclick="loadBusSeats('4')">أتوبيس 4</button>
+</nav>
 
 <main>
-  <div class="bus-list">
-    <h3>الأتوبيسات</h3>
-    <ul>
-      <li onclick="loadBusSeats('1')">أتوبيس 1</li>
-      <li onclick="loadBusSeats('2')">أتوبيس 2</li>
-      <li onclick="loadBusSeats('3')">أتوبيس 3</li>
-      <li onclick="loadBusSeats('4')">أتوبيس 4</li>
-    </ul>
-  </div>
+  <header>رحلة العين السخنة لمركز شباب نور المقطم</header>
 
   <div class="search-box">
     <h3>🔍 البحث برقم العضوية</h3>
     <input type="text" id="membership" placeholder="ادخل رقم العضوية" />
-    <button onclick="searchById()">بحث برقم العضوية</button>
-    <div id="result"></div>
+    <br />
+    <button class="search-btn" onclick="searchById()">بحث برقم العضوية</button>
   </div>
+
+  <div id="result">النتائج ستظهر هنا</div>
 </main>
 
 <footer>
   <div style="text-align: left;">
-    رئيس مجلس الإدارة<br>
+    رئيس مجلس الإدارة<br />
     نادر الرفاعي
   </div>
   <div style="text-align: right;">
-    تحيات مدير المركز<br>
+    تحيات مدير المركز<br />
     هشام أبو العلا
   </div>
 </footer>
 
 <script>
-  const apiBase = "https://script.google.com/macros/s/AKfycbx2uR52ys_ax9mtOwcGgDdoojGmluP6G1XjZNg9igt4Sf_wfkyDcvGKYLayM8fyKmUyuA/exec";
+  const apiBase = "https://script.google.com/macros/s/AKfycbywMLxJT_xBYoFCdSglMuCIVATe-qcu3m5x3t64fIza/dev";
 
   function showError(message) {
-    document.getElementById('result').innerHTML = `<span class="error">❌ ${message}</span>`;
+    document.getElementById('result').innerHTML = `<span class="error" style="color:#d93025;font-weight:600;">❌ ${message}</span>`;
   }
 
-  function showResult(data) {
+  function showBusResults(busNumber, data) {
     const resultDiv = document.getElementById('result');
-    if (Array.isArray(data.results)) {
-      if (data.results.length === 0) {
-        showError("لم يتم العثور على نتائج.");
-        return;
-      }
-
-      let output = "🔽 النتائج المطابقة:\n";
-      data.results.forEach((item, i) => {
-        output += `\n👤 ${item.name}\n🚌 أتوبيس: ${item.bus}\n🪑 كرسي: ${item.seat}\n-------------------`;
+    if (data.results && data.results.length > 0) {
+      let output = `🚍 بيانات الأتوبيس ${busNumber}:\n\n`;
+      data.results.forEach(item => {
+        output += `كرسي رقم ${item.seat} - ${item.name} (عضوية: ${item.id})\n`;
       });
       resultDiv.textContent = output;
-
     } else {
-      resultDiv.textContent = `✅ الاسم: ${data.name}\n🚌 أتوبيس: ${data.bus}\n🪑 كرسي: ${data.seat}`;
+      showError("لا توجد بيانات لهذا الأتوبيس");
+    }
+  }
+
+  function loadBusSeats(busNumber) {
+    document.getElementById('result').textContent = "جاري تحميل البيانات...";
+    fetch(`${apiBase}?bus=${encodeURIComponent(busNumber)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          showError(data.error);
+        } else {
+          showBusResults(busNumber, data);
+        }
+      })
+      .catch(() => {
+        showError("حدث خطأ في الاتصال.");
+      });
+  }
+
+  function showIdResult(data) {
+    if (data.error) {
+      showError(data.error);
+    } else {
+      const output = `✅ الاسم: ${data.name}\n🚌 أتوبيس: ${data.bus}\n🪑 كرسي: ${data.seat}`;
+      document.getElementById('result').textContent = output;
     }
   }
 
   function searchById() {
     const id = document.getElementById('membership').value.trim();
-    if (!id) return showError("من فضلك أدخل رقم العضوية");
+    if (!id) {
+      showError("من فضلك أدخل رقم العضوية");
+      return;
+    }
     document.getElementById('result').textContent = "جاري البحث...";
     fetch(`${apiBase}?id=${encodeURIComponent(id)}`)
       .then(res => res.json())
-      .then(data => data.error ? showError(data.error) : showResult(data))
-      .catch(() => showError("حدث خطأ في الاتصال."));
-  }
-
-  function loadBusSeats(busNumber) {
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = "جاري تحميل بيانات الأتوبيس...";
-    fetch(`${apiBase}?bus=${encodeURIComponent(busNumber)}`)
-      .then(res => res.json())
       .then(data => {
-        if(data.error) {
-          showError(data.error);
-          return;
-        }
-        // اعرض جدول الكراسي
-        let html = `<h3>بيانات أتوبيس ${busNumber}</h3>`;
-        html += `<table>
-          <thead>
-            <tr>
-              <th>رقم العضوية</th>
-              <th>الاسم</th>
-              <th>الكرسي</th>
-            </tr>
-          </thead>
-          <tbody>`;
-        data.results.forEach(item => {
-          html += `<tr>
-            <td>${item.id}</td>
-            <td>${item.name}</td>
-            <td>${item.seat}</td>
-          </tr>`;
-        });
-        html += "</tbody></table>";
-        resultDiv.innerHTML = html;
+        showIdResult(data);
       })
-      .catch(() => showError("حدث خطأ في الاتصال."));
+      .catch(() => {
+        showError("حدث خطأ في الاتصال.");
+      });
   }
 </script>
 

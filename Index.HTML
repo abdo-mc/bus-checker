@@ -284,6 +284,11 @@
   // البحث برقم العضوية فقط (لا يبحث عن أتوبيس)
   function searchById() {
     const id = document.getElementById('membership').value.trim();
+
+  // تحويل الأرقام العربية إلى إنجليزية
+  id = id.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+
+
     if (!id) {
       showError("من فضلك أدخل رقم العضوية");
       return;
